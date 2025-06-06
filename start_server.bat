@@ -1,0 +1,3 @@
+@echo off
+echo Starting HTTP Server...
+powershell -Command "& {$listener = New-Object System.Net.HttpListener; $listener.Prefixes.Add('http://localhost:8000/'); $listener.Start(); Write-Host 'Server running at http://localhost:8000/'; while ($listener.IsListening) { $context = $listener.GetContext(); $requestUrl = $context.Request.Url; $response = $context.Response; $localPath = $requestUrl.LocalPath; $localPath = $localPath.TrimStart('/'); if ($localPath -eq '') { $localPath = 'index.html' }; if (Test-Path $localPath) { $content = [System.IO.File]::ReadAllBytes($localPath); $response.ContentLength64 = $content.Length; $response.OutputStream.Write($content, 0, $content.Length); } else { $response.StatusCode = 404; }; $response.Close(); }}" 
